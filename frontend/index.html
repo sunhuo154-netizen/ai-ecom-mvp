@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AI电商爆款生成器</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f6fa;
+}
+
+.container {
+    width: 600px;
+    margin: 80px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #4F7CFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.card {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.copy {
+    float: right;
+    cursor: pointer;
+    color: blue;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔥 AI爆款标题生成器</h1>
+
+<input id="product" placeholder="输入商品，比如：手机支架">
+
+<button onclick="generate()">一键生成</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+async function generate() {
+
+    const product = document.getElementById("product").value;
+
+    const res = await fetch(
+        `http://127.0.0.1:8000/api/v4/generate?product=${product}`
+    );
+
+    const data = await res.json();
+
+    const list = data.data.titles;
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "";
+
+    list.forEach(item => {
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            ${item.title}
+            <span class="copy" onclick="copyText('${item.title}')">复制</span>
+            <br>
+            ⭐ ${item.score}
+        `;
+
+        resultDiv.appendChild(div);
+    });
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text);
+    alert("已复制：" + text);
+}
+
+</script>
+
+</body>
+</html>
